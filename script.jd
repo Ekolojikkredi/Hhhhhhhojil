@@ -1,0 +1,76 @@
+let ogrenciKayitlar = [];
+
+function showPage(pageId) {
+    const sections = document.querySelectorAll('.page');
+    sections.forEach(section => section.style.display = 'none');
+    document.getElementById(pageId).style.display = 'block';
+}
+
+function showKayitForm() {
+    const kayitTuru = document.getElementById('kayit-turu').value;
+    if (kayitTuru === 'ogrenci') {
+        document.getElementById('okul-kayit').style.display = 'none';
+        document.getElementById('ogrenci-kayit').style.display = 'block';
+    } else if (kayitTuru === 'okul') {
+        document.getElementById('okul-kayit').style.display = 'block';
+        document.getElementById('ogrenci-kayit').style.display = 'none';
+    }
+}
+
+document.getElementById('ogrenci-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const ogrenciAd = document.getElementById('ogrenci-ad').value;
+    const ogrenciSoyad = document.getElementById('ogrenci-soyad').value;
+    const ogrenciNo = document.getElementById('ogrenci-no').value;
+    const ogrenciEmail = document.getElementById('ogrenci-email').value;
+    const ogrenciSifre = document.getElementById('ogrenci-sifre').value;
+
+    const ogrenci = {
+        ad: ogrenciAd,
+        soyad: ogrenciSoyad,
+        no: ogrenciNo,
+        email: ogrenciEmail,
+        sifre: ogrenciSifre,
+        kredi: 0
+    };
+
+    ogrenciKayitlar.push(ogrenci);
+    alert('Öğrenci kaydedildi!');
+    document.getElementById('ogrenci-form').reset();
+});
+
+document.getElementById('okul-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const okulAd = document.getElementById('okul-ad').value;
+    alert('Okul kaydedildi: ' + okulAd);
+    document.getElementById('okul-form').reset();
+});
+
+document.getElementById('veri-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const ogrenciEmail = document.getElementById('ogrenci-email').value;
+    const ogrenciSifre = document.getElementById('ogrenci-sifre').value;
+
+    const ogrenci = ogrenciKayitlar.find(o => o.email === ogrenciEmail && o.sifre === ogrenciSifre);
+
+    if (ogrenci) {
+        document.getElementById('veri-goruntule').innerHTML = `
+            <p>Öğrenci Ad: ${ogrenci.ad}</p>
+            <p>Öğrenci Soyad: ${ogrenci.soyad}</p>
+            <p>Öğrenci No: ${ogrenci.no}</p>
+            <p>Toplam Kredi: ${ogrenci.kredi}</p>
+        `;
+    } else {
+        alert('Öğrenci bulunamadı veya şifre hatalı');
+    }
+});
+
+function updateAtikSayaci() {
+    let totalAtik = 0;
+    ogrenciKayitlar.forEach(ogrenci => {
+        totalAtik += ogrenci.kredi; // Örnek olarak krediye bağlı atıkları sayıyoruz
+    });
+    document.getElementById('atik-sayaci').innerText = `Toplam Atık: ${totalAtik} kg`;
+}
+
+setInterval(updateAtikSayaci, 5000); // Atık sayacını her 5 saniyede bir güncelle
